@@ -1,73 +1,80 @@
-# PHP Development Environment with Docker Compose
+# Simple DAMP Stack (Docker-based Apache, MySQL, PHP)  
 
-This Docker Compose file defines a multi-container application for a PHP development environment. It includes services for a web server (Apache with PHP), a MySQL database, phpMyAdmin for database management, and Composer for dependency management.
+A ready-to-use Docker development environment featuring Apache, MySQL, and PHP (DAMP stack). Quickly deploy PHP web applications with full MySQL database support.
 
-## Services
 
-The `services` section defines the individual containers that make up the application.
-
-### web
-
-* Builds the web server image using the Dockerfile in the current directory.
-* Names the container `php-apache`.
-* Automatically restarts the container if it fails.
-* Maps port 8080 on the host to port 80 in the container.
-* Mounts the `./www` directory on the host to `/var/www/html` in the container, allowing code changes to be reflected immediately.
-* Connects the container to the `php_server` network.
-* Depends on the `db` service and waits for it to be healthy before starting.
-* Sets the `DB_HOST` environment variable to `db`, which is the hostname of the database container.
-
-### db
-
-* Uses the official MySQL 8 image.
-* Names the container `mysql`.
-* Automatically restarts the container if it fails.
-* Sets environment variables for the MySQL root password, database name, user, and password.
-* Creates a volume named `mysql_data` to persist database data.
-* Connects the container to the `php_server` network.
-* Defines a health check to ensure the database is running correctly. The `web` service depends on this service and waits for it to be healthy before starting.
-* **Note:** If the MySQL container is considered "unhealthy" too soon, increase the `retries` or `interval` in the health check to give MySQL more time to become fully operational.
-
-### phpmyadmin
-
-* Uses the phpmyadmin image.
-* Names the container `phpmyadmin`.
-* Automatically restarts the container if it fails.
-* Maps port 8081 on the host to port 80 in the container.
-* Sets the `PMA_HOST` environment variable to `db`, which is the hostname of the database container.
-* Sets the `UPLOAD_LIMIT` environment variable to `128M`.
-* Depends on the `db` service.
-* Connects the container to the `php_server` network.
-
-### composer
-
-* Uses the composer image.
-* Names the container `composer`.
-* Mounts the `./www` directory on the host to `/app` in the container, allowing Composer to manage project dependencies.
-* Connects the container to the `php_server` network.
-
-## Networks
-
-The `networks` section defines the networks used by the application.
-
-### php_server
-
-A network that allows containers to communicate with each other.
-
-## Volumes
-
-The `volumes` section defines the volumes used by the application.
-
-### mysql_data
-
-A volume that persists the MySQL database data.
+### Menu
+1. [Project Structure](#project-structure)
+2. [Technologies Used](#technologies-used)
+3. [Setup Instructions](#setup-instructions)
+4. [Access Information](#access-information)
+5. [Requirements](#requirements)
+6. [Docker Documentation](#documentation)
 
 
 ---
 
+## Project Structure  
+```
+simple-damp/
+├── conf/
+│   └── php.ini          # [Optional] Custom PHP configuration (copy to Docker container as needed)
+├── scripts/
+│   └── simple-damp.bat  # [Optional] Interactive menu script (add to PATH for terminal access via 'simple-damp'). Available only through git clone or download as a ZIP.
+├── www/
+│   ├── php-app/         # Your PHP projects should be placed inside this (e.g., public_html, htdocs, etc.).
+│   │   └── index.php
+│   └── other-app/
+│       └── index.php
+├── Dockerfile
+├── docker-compose.yml
+├── LICENSE
+└── README.md
+```
+## Technologies Used
+| Technology                | Description                          |
+|---------------------------|--------------------------------------|
+| **PHP 8.2 with Apache**    | Used for server-side scripting on Debian |
+| **MySQL 8**                | Database system used for data storage |
+| **phpMyAdmin**             | Tool for managing MySQL databases    |
+| **Composer**               | Dependency manager for PHP           |
 
-## Proyecto en GitHub  
-[🔗 Ver el código fuente](https://github.com/Jesparzarom/simple-damp)  
 
-## Documentación  
-[📖 Leer la documentación](https://hub.docker.com/r/juanprogramm/simple-damp)
+---
+
+## Setup Instructions
+Open your terminal (CMD, PowerShell, Shell, Bash, etc.) and navigate to the desired directory where you want to host the simple-damp project. Then:
+
+| Step                                | Command/Action                                                                 |
+|-------------------------------------|--------------------------------------------------------------------------------|
+| **Clone the repository or [download Zip](https://github.com/Jesparzarom/simple-damp/archive/refs/heads/main.zip)** | `git clone https://github.com/Jesparzarom/simple-damp.git` |
+| **Enter the simple-damp environment** | `cd simple-damp`                                                           |
+| **Start the container**             | `docker-compose up -d`                                                     |
+
+
+## Access Information
+
+| Service                     | URL                         |
+|-----------------------------|-----------------------------|
+| **Web Base Path**          | [http://localhost:8080](http://localhost:8080)  |
+| **phpMyAdmin (MySQL)**       | [http://localhost:8081](http://localhost:8081)  |
+
+
+## Requirements
+- Docker Engine
+- Docker Compose
+
+---
+
+
+## HitHub Project 
+[🔗 GitHub Repo](https://github.com/Jesparzarom/simple-damp)  
+
+## Documentation
+> docker repository
+
+[📖 Read the documentation](https://hub.docker.com/r/juanprogramm/simple-damp)
+
+---
+
+
