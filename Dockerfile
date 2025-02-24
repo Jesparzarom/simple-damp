@@ -10,7 +10,7 @@ LABEL maintainer="J.Esparza <juanprogramm@outlook.com>" \
     org.opencontainers.image.documentation="https://hub.docker.com/r/juanprogramm/simple-damp" \
     org.opencontainers.image.vendor="J.Esparza" \
     org.opencontainers.image.licenses="MIT" \
-    org.opencontainers.image.source="https://github.com/usuario/repositorio" \
+    org.opencontainers.image.source="https://github.com/Jesparzarom/simple-damp" \
     com.example.stack="Docker, Linux, PHP, Apache, MySQL"
 
 # Actualizar lista de paquetes
