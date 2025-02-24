@@ -1,19 +1,26 @@
 @echo off
 :menu
 cls
+echo "+-------------------------+";
+echo "|   _____            __   |";
+echo "|  / __(_)_ _  ___  / /__ |";
+echo "| _\ \/ /  ' \/ _ \/ / -_)|";
+echo "|/___/_/_/_/_/ .__/_/\__/ |";
+echo "|   ___  ___/_/__  ______ |";
+echo "|  / _ \/ _ | /  |/  / _ \|";
+echo "| / // / __ |/ /|_/ / ___/|";
+echo "|/____/_/ |_/_/  /_/_/    |";
+echo "+-------------------------+";
+echo 1. Start server
+echo 2. Stop server
+echo 3. Restart server
+echo 4. Access server terminal
+echo 5. Access MySQL terminal
+echo 6. Access phpMyAdmin
+echo 7. Access PHP info
+echo 8. Exit
 echo ==================================
-echo DAMP Enviroment
-echo ==================================
-echo 1. Iniciar servidor
-echo 2. Detener servidor
-echo 3. Reiniciar servidor
-echo 4. Acceder a la terminal del servidor
-echo 5. Acceder a la terminal de MySQL
-echo 6. Acceder a phpMyAdmin
-echo 7. Acceder a php info
-echo 8. Salir
-echo ==================================
-set /p choice="Seleccione opcion: "
+set /p choice="Select option: "
 
 if "%choice%"=="1" goto start
 if "%choice%"=="2" goto stop
@@ -47,9 +54,9 @@ goto menu
 :shell
 echo ""
 echo ===========================
-echo PHP Apache Enviroment Shell
+echo PHP Apache Environment Shell
 echo ===========================
-echo Escribe 'exit' para salir
+echo Type 'exit' to exit
 echo ""
 docker exec -it php-apache bash
 pause
@@ -58,9 +65,9 @@ goto menu
 :mysql
 echo ""
 echo ======================
-echo MySQL Enviroment Shell
+echo MySQL Environment Shell
 echo =======================
-echo Escribe 'exit' para salir
+echo Type 'exit' to exit
 echo ""
 docker exec -it mysql mysql -u root -p
 pause
@@ -71,6 +78,13 @@ goto menu
 start http://localhost:8081
 pause
 goto menu
+
+:phpinfo
+@echo off
+start http://localhost:8080
+pause
+goto menu
+
 
 :phpinfo
 @echo off
