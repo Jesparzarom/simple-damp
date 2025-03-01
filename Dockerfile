@@ -1,10 +1,9 @@
 ARG release=8.2
 ARG type=apache
-ARG localdir=/www/
-ARG workdir=/var/www/html
 
 FROM php:${release}-${type} AS server-builder
-WORKDIR $workdir
+
+WORKDIR /var/www/html
 
 ENV APACHE_RUN_USER=www-data
 ENV APACHE_RUN_GROUP=www-data
@@ -63,7 +62,7 @@ RUN apt-get update && apt-get upgrade -y    \
     && a2enmod rewrite expires headers
 
 # Copy Apache configuration
-COPY $localdir $workdir
+COPY /www/ /var/www/html
 COPY ./conf/apache2/conf-available/servername.conf /etc/apache2/conf-available/servername.conf
 COPY ./conf/apache2/conf-available/tuning.conf /etc/apache2/conf-available/tuning.conf
 COPY ./conf/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini

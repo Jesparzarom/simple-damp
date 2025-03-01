@@ -59,6 +59,7 @@ echo ------------------------------
 echo Starting Docker server...
 echo ------------------------------
 cd /d "%~dp0.."
+cd ..
 docker-compose -f docker-compose.yml up --build -d
 echo [Docker server started successfully]
 pause
@@ -69,6 +70,7 @@ echo ------------------------------
 echo Stopping Docker server...
 echo ------------------------------
 cd /d "%~dp0.."
+cd ..
 docker-compose -f docker-compose.yml down
 echo [Docker server stopped]
 pause
@@ -79,6 +81,7 @@ echo ------------------------------
 echo Restarting Docker server...
 echo ------------------------------
 cd /d "%~dp0.."
+cd ..
 docker-compose -f docker-compose.yml restart
 echo [Docker server restarted]
 pause
@@ -101,8 +104,8 @@ echo ------------------------------
 echo MySQL Environment Shell
 echo ------------------------------
 echo Type 'exit' to exit
-echo +
-docker exec -it simple-damp-db mysql -u root -p
+echo --- user [user] password [passwords] ----
+docker exec -it simple-damp-db mysql -u user -p
 pause
 goto menu
 
