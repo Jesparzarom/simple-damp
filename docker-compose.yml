@@ -68,8 +68,6 @@ services:
     ports:
       - "8081:80"
     environment:
-      PMA_HOSTS: db,db_wp,db_laravel
-      PMA_ARBITRARY: 1
       UPLOAD_LIMIT: 128M
     networks:
       - simple-damp-network
