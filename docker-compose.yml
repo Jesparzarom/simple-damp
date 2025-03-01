@@ -1,87 +1,62 @@
-# This Docker Compose file defines a multi-container application for a PHP development environment.
-# It includes services for a web server (Apache with PHP), a MySQL database, phpMyAdmin for database management, and Composer for dependency management.
+networks:
+  simple-damp-network:
+    driver: bridge
 
-# The 'services' section defines the individual containers that make up the application.
-
-# 'web' service:
-#   - Builds the web server image using the Dockerfile in the current directory.
-#   - Names the container 'php-apache'.
-#   - Automatically restarts the container if it fails.
-#   - Maps port 8080 on the host to port 80 in the container.
-#   - Mounts the './www' directory on the host to '/var/www/html' in the container, allowing code changes to be reflected immediately.
-#   - Attaches the container to the 'php_server' network.
-#   - Depends on the 'db' service and waits for it to be healthy before starting.
-#   - Sets the 'DB_HOST' environment variable to 'db', which is the hostname of the database container.
-
-# 'db' service:
-#   - Uses the official MySQL 8 image.
-#   - Names the container 'mysql'.
-#   - Automatically restarts the container if it fails.
-#   - Sets environment variables for the MySQL root password, database name, user, and password.
-#   - Creates a volume named 'mysql_data' to persist database data.
-#   - Attaches the container to the 'php_server' network.
-#   - Defines a healthcheck to ensure the database is running correctly.
-#   - The 'web' service depends on this service and waits for it to be healthy before starting.
-#   - !!! If you find that the MySQL container is considered "unhealthy" too soon, you might increase the retries or the interval to give MySQL more time to become fully operational.
-
-# 'phpmyadmin' service:
-#   - Uses the phpmyadmin image.
-#   - Names the container 'phpmyadmin'.
-#   - Automatically restarts the container if it fails.
-#   - Maps port 8081 on the host to port 80 in the container.
-#   - Sets the 'PMA_HOST' environment variable to 'db', which is the hostname of the database container.
-#   - Sets the 'UPLOAD_LIMIT' environment variable to '128M'.
-#   - Depends on the 'db' service.
-#   - Attaches the container to the 'php_server' network.
-
-# 'composer' service:
-#   - Uses the composer image.
-#   - Names the container 'composer'.
-#   - Mounts the './www' directory on the host to '/app' in the container, allowing Composer to manage project dependencies.
-#   - Attaches the container to the 'php_server' network.
-
-# The 'networks' section defines the networks used by the application.
-# 'php_server' network:
-#   - A network that allows containers to communicate with each other.
-
-# The 'volumes' section defines the volumes used by the application.
-# 'mysql_data' volume:
-#   - A volume that persists the MySQL database data.
+volumes:
+  mysql_data:
 
 services:
-  web:
-    build: 
+
+  webserver:
+    build:
       context: .
       dockerfile: Dockerfile
-    container_name: php-apache
+    container_name: simple-damp
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1500M
+        reservations:
+          cpus: "0.5"
+          memory: 512M
     ports:
       - "8080:80"
+      # - "443:443" # Uncomment for SSL
     volumes:
       - ./www:/var/www/html
+      - ./conf/apache2/conf-available/servername.conf:/etc/apache2/conf-available/servername.conf
+      - ./conf/apache2/sites-available/virtualhost.conf:/etc/apache2/sites-available/000-default.conf
     networks:
-      - php_server
+      - simple-damp-network
     depends_on:
       db:
         condition: service_healthy
     environment:
       - DB_HOST=db
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+      - PHP_MEMORY_LIMIT=256M
+    command: >
+      sh -c "a2enmod rewrite && a2ensite 000-default.conf && apache2-foreground"
+
 
   db:
     image: mysql:8
-    container_name: mysql
+    container_name: simple-damp-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: user
+      MYSQL_ROOT_PASSWORD: root #-u root -p -> root
+      MYSQL_DATABASE: simpledamp 
+      MYSQL_USER: user #-u root -p -> password
       MYSQL_PASSWORD: password
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - php_server
+      - simple-damp-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$${MYSQL_USER}", "-p$${MYSQL_PASSWORD}"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u$${MYSQL_USER}", "-p$${MYSQL_PASSWORD}" ]
       interval: 5s
       timeout: 10s
       retries: 5
@@ -93,23 +68,8 @@ services:
     ports:
       - "8081:80"
     environment:
-      PMA_HOST: db
+      PMA_HOSTS: db,db_wp,db_laravel
+      PMA_ARBITRARY: 1
       UPLOAD_LIMIT: 128M
-    depends_on:
-      - db
     networks:
-      - php_server
-
-  composer:
-    image: composer:latest
-    container_name: composer
-    volumes:
-      - ./www:/app
-    networks:
-      - php_server
-
-networks:
-  php_server:
-
-volumes:
-  mysql_data:
+      - simple-damp-network

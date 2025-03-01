@@ -1,6 +1,6 @@
 # Simple DAMP Stack (Docker-based Apache, MySQL, PHP)  
 
-A ready-to-use Docker development environment featuring Apache, MySQL, and PHP (DAMP stack). Quickly deploy PHP web applications with full MySQL database support.
+A ready-to-use Docker development environment featuring Apache, MySQL, and PHP (DAMP stack). [EXPERIMENTAL] DEploy PHP web with MySQL database support.
 
 
 ### Menu
@@ -18,14 +18,18 @@ A ready-to-use Docker development environment featuring Apache, MySQL, and PHP (
 ```
 simple-damp/
 ├── conf/
-│   └── php.ini          # [Optional] Custom PHP configuration (copy to Docker container as needed)
+│   └── apache2                 # [Optional] Custom Apache or PHP configuration (copy to Docker container as needed)
+|     └── conf-available
+|     └── sites-available
+|     └── scripts         
+│   └── php        
 ├── scripts/
-│   └── simple-damp.bat  # [Optional] Interactive menu script (add to PATH for terminal access via 'simple-damp'). Available only through git clone or download as a ZIP.
+│   └── dockerfile
+│   └── simple-damp             # [Optional] Interactive menu script (add to PATH for terminal access via 'simple-damp'). Available only through git clone or download as a ZIP.
+ 
 ├── www/
-│   ├── php-app/         # Your PHP projects should be placed inside this (e.g., public_html, htdocs, etc.).
+│   ├── phpproject/         # Your PHP projects should be placed inside this 
 │   │   └── index.php
-│   └── other-app/
-│       └── index.php
 ├── Dockerfile
 ├── docker-compose.yml
 ├── LICENSE

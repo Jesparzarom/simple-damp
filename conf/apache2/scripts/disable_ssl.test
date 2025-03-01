@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Disable SSL module and site
+a2dismod ssl
+a2dissite default-ssl
+
+# Disable SSL port
+sed -i 's/Listen 443/#Listen 443/' /etc/apache2/ports.conf
+
+# Restart Apache
+service apache2 restart
+
+echo "SSL is disabled"
